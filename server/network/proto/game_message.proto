@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package game;
+
+// 消息类型
+enum MessageType {
+    HEARTBEAT = 0;
+    LOGIN_REQUEST = 1;
+    LOGIN_RESPONSE = 2;
+    CHAT_MESSAGE = 3;
+    GAME_ACTION = 4;
+}
+
+// 心跳消息
+message HeartbeatMessage {
+    int64 timestamp = 1;
+}
+
+// 登录请求
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+    string device_id = 3;
+}
+
+// 登录响应
+message LoginResponse {
+    bool success = 1;
+    string message = 2;
+    string session_id = 3;
+    int32 player_id = 4;
+}
+
+// 聊天消息
+message ChatMessage {
+    string sender = 1;
+    string content = 2;
+    int64 timestamp = 3;
+}
+
+// 游戏动作
+message GameAction {
+    int32 action_type = 1;
+    repeated float params = 2;
+    int64 timestamp = 3;
+}
+
+// 通用消息包装
+message GameMessage {
+    MessageType type = 1;
+    oneof message {
+        HeartbeatMessage heartbeat = 2;
+        LoginRequest login_request = 3;
+        LoginResponse login_response = 4;
+        ChatMessage chat_message = 5;
+        GameAction game_action = 6;
+    }
+}
