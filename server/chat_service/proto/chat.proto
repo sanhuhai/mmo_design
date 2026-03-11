@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package chat_service;
+
+// 消息类型枚举
+enum MessageType {
+    WORLD = 0;      // 世界聊天
+    NEARBY = 1;     // 附近聊天
+    GUILD = 2;      // 公会聊天
+    PRIVATE = 3;    // 好友私聊
+    STRANGER = 4;   // 陌生人聊天
+    SYSTEM = 5;     // 系统消息
+}
+
+// 聊天消息结构
+message ChatMessage {
+    int32 message_id = 1;        // 消息ID
+    int32 sender_id = 2;         // 发送者ID
+    string sender_name = 3;       // 发送者名称
+    MessageType type = 4;         // 消息类型
+    string content = 5;           // 消息内容
+    int64 timestamp = 6;          // 发送时间戳
+    int32 channel_id = 7;         // 频道ID（如公会ID）
+    int32 target_id = 8;          // 目标ID（私聊时使用）
+    float sender_x = 9;           // 发送者X坐标（附近聊天使用）
+    float sender_y = 10;          // 发送者Y坐标（附近聊天使用）
+    float sender_z = 11;          // 发送者Z坐标（附近聊天使用）
+}
+
+// 消息响应结构
+message MessageResponse {
+    int32 code = 1;               // 响应码 0:成功 非0:失败
+    string message = 2;           // 响应消息
+    int32 message_id = 3;         // 消息ID
+    int64 timestamp = 4;          // 响应时间戳
+}
+
+// 频道成员列表请求
+message ChannelMembersRequest {
+    int32 channel_id = 1;         // 频道ID
+    MessageType channel_type = 2;  // 频道类型
+}
+
+// 频道成员列表响应
+message ChannelMembersResponse {
+    int32 code = 1;               // 响应码
+    string message = 2;           // 响应消息
+    repeated int32 member_ids = 3; // 成员ID列表
+    repeated string member_names = 4; // 成员名称列表
+}
+
+// 消息历史请求
+message MessageHistoryRequest {
+    MessageType message_type = 1;  // 消息类型
+    int32 channel_id = 2;         // 频道ID
+    int64 start_time = 3;         // 开始时间
+    int64 end_time = 4;           // 结束时间
+    int32 limit = 5;              // 消息数量限制
+}
+
+// 消息历史响应
+message MessageHistoryResponse {
+    int32 code = 1;               // 响应码
+    string message = 2;           // 响应消息
+    repeated ChatMessage messages = 3; // 消息列表
+}

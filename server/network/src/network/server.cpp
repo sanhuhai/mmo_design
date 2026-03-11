@@ -141,7 +141,7 @@ void Server::onRead(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
             } else {
                 // Call message callback
                 if (self->message_callback_) {
-                    self->message_callback_(message);
+                    self->message_callback_(client, message);
                 }
             }
         }

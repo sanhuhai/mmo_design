@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package test;
+
+// 测试消息结构
+message TestMessage {
+    int32 id = 1;
+    string content = 2;
+    int64 timestamp = 3;
+}
+
+// 响应消息结构
+message TestResponse {
+    int32 code = 1;
+    string message = 2;
+    TestMessage data = 3;
+}

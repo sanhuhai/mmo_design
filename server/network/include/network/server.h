@@ -12,7 +12,7 @@
 namespace network {
 
 using ConnectionCallback = std::function<void(uv_tcp_t*)>;
-using MessageCallback = std::function<void(const std::string&)>;
+using MessageCallback = std::function<void(uv_tcp_t*, const std::string&)>;
 using ErrorCallback = std::function<void(ErrorCode)>;
 
 class Server {

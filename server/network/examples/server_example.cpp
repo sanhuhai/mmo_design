@@ -5,7 +5,7 @@
 
 using namespace network;
 
-void onMessageReceived(const std::string& message) {
+void onMessageReceived(uv_tcp_t* conn, const std::string& message) {
     std::cout << "Received message: " << message << std::endl;
 }
 

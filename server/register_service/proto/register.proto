@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package register_service;
+
+message SendCodeRequest {
+    string phone = 1;
+    string email = 2;
+    int32 type = 3; // 1-注册 2-找回密码 3-绑定手机
+}
+
+message SendCodeResponse {
+    int32 code = 1;
+    string message = 2;
+    int32 expire_time = 3; // 过期时间（秒）
+    int32 retry_after = 4; // 重试间隔（秒）
+}
+
+message RegisterRequest {
+    string username = 1;
+    string password = 2;
+    string confirm_password = 3;
+    string phone = 4;
+    string email = 5;
+    string verification_code = 6;
+    string invite_code = 7;
+    string device_id = 8;
+    string device_type = 9;
+    string ip_address = 10;
+    string mac_address = 11;
+    string client_version = 12;
+}
+
+message RegisterReward {
+    int32 gold = 1;
+    repeated int32 items = 2;
+    int32 experience = 3;
+}
+
+message RegisterResponse {
+    int32 code = 1;
+    string message = 2;
+    int32 user_id = 3;
+    string username = 4;
+    string token = 5;
+    string session_id = 6;
+    RegisterReward reward = 7;
+}
+
+message ActivateRequest {
+    int32 user_id = 1;
+    string activation_code = 2;
+    string phone = 3;
+    string email = 4;
+}
+
+message ActivateResponse {
+    int32 code = 1;
+    string message = 2;
+    bool activated = 3;
+}
