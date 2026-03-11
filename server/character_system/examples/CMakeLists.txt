@@ -1,0 +1,5 @@
+add_executable(character_example character_example.cpp)
+target_link_libraries(character_example character_system)
+
+add_executable(component_test component_test.cpp)
+target_link_libraries(component_test character_system)

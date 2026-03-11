@@ -18,22 +18,22 @@ void onError(ErrorCode error) {
 }
 
 int main() {
-    // 初始化网络库
+    // Initialize network library
     if (!init()) {
         std::cerr << "Failed to initialize network library" << std::endl;
         return 1;
     }
     
-    // 创建服务器
+    // Create server
     Server server;
     
-    // 设置回调
+    // Set callbacks
     server.setConnectionCallback(onConnection);
     server.setMessageCallback(onMessageReceived);
     server.setErrorCallback(onError);
     
-    // 启动服务器
-    if (!server.start(8080)) {
+    // Start server
+    if (!server.start("0.0.0.0", 8080)) {
         std::cerr << "Failed to start server" << std::endl;
         cleanup();
         return 1;
@@ -41,14 +41,14 @@ int main() {
     
     std::cout << "Server started on port 8080. Press Enter to exit." << std::endl;
     
-    // 等待用户输入
+    // Wait for user input
     std::string input;
     std::getline(std::cin, input);
     
-    // 停止服务器
+    // Stop server
     server.stop();
     
-    // 清理
+    // Cleanup
     cleanup();
     return 0;
 }

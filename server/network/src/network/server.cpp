@@ -1,5 +1,6 @@
 #include "network/server.h"
 #include "network/message.h"
+#include "network/connection.h"
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -39,7 +40,7 @@ bool Server::start(const std::string& host, int port) {
 void Server::stop() {
     uv_close((uv_handle_t*)&server_, nullptr);
     
-    // 关闭所有连接
+    // Close all connections
     for (auto& pair : connections_) {
         uv_close((uv_handle_t*)pair.first, &Server::onClose);
     }
@@ -91,10 +92,10 @@ void Server::onNewConnection(uv_stream_t* server, int status) {
         auto connection = std::make_unique<Connection>(client);
         self->connections_[client] = std::move(connection);
         
-        // 开始读取数据
+        // Start reading data
         uv_read_start((uv_stream_t*)client, &Server::onAllocBuffer, &Server::onRead);
         
-        // 调用连接回调
+        // Call connection callback
         if (self->connection_callback_) {
             self->connection_callback_(client);
         }
@@ -114,27 +115,31 @@ void Server::onRead(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
             std::cerr << "Read error: " << uv_strerror(nread) << std::endl;
         }
         uv_close((uv_handle_t*)stream, &Server::onClose);
-    } else if (nread > 0) {
+        delete[] buf->base;
+        return;
+    }
+    
+    if (nread > 0) {
         Server* self = static_cast<Server*>(stream->data);
         uv_tcp_t* client = (uv_tcp_t*)stream;
         
-        // 处理消息
+        // Process message
         std::string data(buf->base, nread);
         size_t consumed = 0;
         std::string message = Message::decode(data, consumed);
         
         if (!message.empty()) {
-            // 检查是否为心跳消息
+            // Check if heartbeat message
             if (Message::isHeartbeatMessage(message)) {
-                // 回复心跳
+                // Reply heartbeat
                 self->send(client, Message::createHeartbeatMessage());
-                // 更新心跳时间
+                // Update heartbeat time
                 auto it = self->connections_.find(client);
                 if (it != self->connections_.end()) {
                     it->second->updateHeartbeat();
                 }
             } else {
-                // 调用消息回调
+                // Call message callback
                 if (self->message_callback_) {
                     self->message_callback_(message);
                 }
@@ -156,7 +161,9 @@ void Server::onClose(uv_handle_t* handle) {
     uv_tcp_t* client = (uv_tcp_t*)handle;
     Server* self = static_cast<Server*>(client->data);
     
-    self->connections_.erase(client);
+    if (self) {
+        self->connections_.erase(client);
+    }
     delete client;
 }
 

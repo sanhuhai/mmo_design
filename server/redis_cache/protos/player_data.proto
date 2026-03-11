@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package game;
+
+message PlayerBaseInfo {
+    int32 player_id = 1;
+    string username = 2;
+    int32 level = 3;
+    int64 experience = 4;
+    int32 gold = 5;
+    int32 silver = 6;
+    int64 last_login_time = 7;
+    int64 last_logout_time = 8;
+    int32 status = 9;
+}
+
+message PlayerCharacterInfo {
+    int32 player_id = 1;
+    int32 character_id = 2;
+    string character_name = 3;
+    int32 profession = 4;
+    int32 level = 5;
+    int64 experience = 6;
+    int32 hp = 7;
+    int32 max_hp = 8;
+    int32 mp = 9;
+    int32 max_mp = 10;
+    int32 attack = 11;
+    int32 defense = 12;
+    int32 speed = 13;
+    Position position = 14;
+    
+    message Position {
+        float x = 1;
+        float y = 2;
+        float z = 3;
+        int32 map_id = 4;
+    }
+}
+
+message PlayerInventoryInfo {
+    int32 player_id = 1;
+    int32 capacity = 2;
+    repeated InventoryItem items = 3;
+    
+    message InventoryItem {
+        int32 slot_id = 1;
+        int32 item_id = 2;
+        int32 count = 3;
+        int32 durability = 4;
+    }
+}
+
+message PlayerSkillInfo {
+    int32 player_id = 1;
+    repeated Skill skills = 2;
+    
+    message Skill {
+        int32 skill_id = 1;
+        int32 level = 2;
+        int64 last_cast_time = 3;
+    }
+}
+
+message PlayerFriendInfo {
+    int32 player_id = 1;
+    repeated Friend friends = 2;
+    repeated FriendGroup groups = 3;
+    
+    message Friend {
+        int32 friend_id = 1;
+        string friend_name = 2;
+        int32 group_id = 3;
+        int64 friend_since = 4;
+    }
+    
+    message FriendGroup {
+        int32 group_id = 1;
+        string group_name = 2;
+    }
+}
+
+message PlayerQuestInfo {
+    int32 player_id = 1;
+    repeated Quest quests = 2;
+    
+    message Quest {
+        int32 quest_id = 1;
+        int32 status = 2;
+        int32 progress = 3;
+        int64 accept_time = 4;
+        int64 complete_time = 5;
+    }
+}
+
+message PlayerData {
+    PlayerBaseInfo base_info = 1;
+    PlayerCharacterInfo character_info = 2;
+    PlayerInventoryInfo inventory_info = 3;
+    PlayerSkillInfo skill_info = 4;
+    PlayerFriendInfo friend_info = 5;
+    PlayerQuestInfo quest_info = 6;
+    int64 update_time = 7;
+    bool is_dirty = 8;
+}
